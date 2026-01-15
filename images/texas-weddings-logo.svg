@@ -1,0 +1,6 @@
+<svg width="140" height="40" viewBox="0 0 140 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="140" height="40" rx="4" fill="#f8f4f0"/>
+  <text x="12" y="17" font-family="Georgia, serif" font-size="10" font-weight="400" letter-spacing="1" fill="#8b7355">TEXAS</text>
+  <text x="12" y="32" font-family="Georgia, serif" font-size="16" font-style="italic" fill="#c9a87c">Weddings</text>
+  <path d="M120 10 L125 20 L120 30" stroke="#c9a87c" stroke-width="1.5" fill="none"/>
+</svg>

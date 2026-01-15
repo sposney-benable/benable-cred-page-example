@@ -1,0 +1,16 @@
+<svg width="200" height="60" viewBox="0 0 200 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Camera aperture icon -->
+  <circle cx="30" cy="30" r="24" stroke="#2D3748" stroke-width="2" fill="none"/>
+  <circle cx="30" cy="30" r="16" stroke="#2D3748" stroke-width="1.5" fill="none"/>
+  <circle cx="30" cy="30" r="8" fill="#2D3748"/>
+  <!-- Aperture blades -->
+  <path d="M30 6 L33 14 L27 14 Z" fill="#2D3748"/>
+  <path d="M50.8 18 L44 23 L42 17 Z" fill="#2D3748"/>
+  <path d="M50.8 42 L42 43 L44 37 Z" fill="#2D3748"/>
+  <path d="M30 54 L27 46 L33 46 Z" fill="#2D3748"/>
+  <path d="M9.2 42 L16 37 L18 43 Z" fill="#2D3748"/>
+  <path d="M9.2 18 L18 17 L16 23 Z" fill="#2D3748"/>
+  <!-- Text -->
+  <text x="65" y="28" font-family="Georgia, serif" font-size="18" font-weight="600" fill="#2D3748">Bella Vista</text>
+  <text x="65" y="46" font-family="Arial, sans-serif" font-size="11" font-weight="400" letter-spacing="2" fill="#718096">PHOTOGRAPHY</text>
+</svg>
