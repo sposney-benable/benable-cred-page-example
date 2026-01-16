@@ -54,11 +54,11 @@ function renderPublicView() {
   // Credentials
   renderCredentials(data.business.credentials);
 
-  // Review Keywords (moved to top)
-  renderKeywordTags('reviewKeywordTags', data.reviewSentiment.topKeywords);
-
-  // Reviews with avatars
-  renderReviews(data.featuredReviews);
+  // Customer Insights (new insights-focused section)
+  renderReviewSnapshot(data.reviewInsights.snapshot);
+  renderCustomerInsights(data.reviewInsights.customerInsights);
+  renderFeaturedReviews(data.reviewInsights.featuredGoogleReview, data.reviewInsights.recentReview);
+  renderReviewPlatformLinks(data.reviewInsights.platformLinks);
 
   // Benable Themes (moved to top)
   renderKeywordTags('benableThemeTags', data.benableSentiment.topThemes);
@@ -121,6 +121,17 @@ function renderBusinessLinks(business) {
 
 function renderCredentials(credentials) {
   const grid = document.getElementById('credentialsGrid');
+
+  // Format awards as hyperlinks
+  const awardsHtml = credentials.awards.map(award =>
+    `<a href="${award.url}" target="_blank" class="credential-link">${award.name} (${award.source})</a>`
+  ).join(', ');
+
+  // Format affiliations as hyperlinks
+  const affiliationsHtml = credentials.affiliations.map(aff =>
+    `<a href="${aff.url}" target="_blank" class="credential-link">${aff.name}</a>`
+  ).join(', ');
+
   grid.innerHTML = `
     <div class="credential-item">
       <div class="credential-icon"><i class="fas fa-calendar-check"></i></div>
@@ -140,14 +151,14 @@ function renderCredentials(credentials) {
       <div class="credential-icon"><i class="fas fa-award"></i></div>
       <div class="credential-content">
         <h4>Awards</h4>
-        <p>${credentials.awards}</p>
+        <p>${awardsHtml}</p>
       </div>
     </div>
     <div class="credential-item">
       <div class="credential-icon"><i class="fas fa-users"></i></div>
       <div class="credential-content">
         <h4>Affiliations</h4>
-        <p>${credentials.affiliations}</p>
+        <p>${affiliationsHtml}</p>
       </div>
     </div>
   `;
@@ -155,33 +166,152 @@ function renderCredentials(credentials) {
 
 function renderKeywordTags(containerId, keywords) {
   const container = document.getElementById(containerId);
+  if (!container) return;
   container.innerHTML = keywords.map(keyword =>
     `<span class="keyword-tag">${keyword}</span>`
   ).join('');
 }
 
-function renderReviews(reviews) {
-  const avatarImages = ['images/reviewer-1.jpg', 'images/reviewer-2.jpg', 'images/reviewer-3.jpg'];
-  const list = document.getElementById('reviewsList');
+function renderReviewSnapshot(snapshot) {
+  const container = document.getElementById('reviewSnapshot');
+  if (!container) return;
 
-  list.innerHTML = reviews.map((review, index) => `
-    <div class="review-card">
-      <div class="review-header">
-        <img src="${avatarImages[index]}" alt="${review.reviewerName}" class="reviewer-avatar">
-        <div class="reviewer-info">
-          <div class="reviewer-name">${review.reviewerName}</div>
-          <div class="review-meta">
-            <div class="review-stars">
-              ${generateStarsHTML(review.rating)}
-            </div>
-            <span class="review-platform-badge ${review.platform.toLowerCase().replace(' ', '')}">${review.platform}</span>
-            <span class="review-date">${formatDate(review.date)}</span>
-          </div>
+  const velocityChange = snapshot.reviewVelocity.current - snapshot.reviewVelocity.previous;
+  const velocityText = velocityChange > 0 ? `+${velocityChange} from last month` : `${velocityChange} from last month`;
+
+  container.innerHTML = `
+    <div class="snapshot-item">
+      <div class="snapshot-value">
+        ${snapshot.overallRating}
+        <div class="stars">${generateStarsHTML(Math.round(snapshot.overallRating))}</div>
+      </div>
+      <div class="snapshot-label">Overall Rating</div>
+      <div class="snapshot-detail">${snapshot.totalReviews} reviews across ${snapshot.platforms}</div>
+    </div>
+    <div class="snapshot-item">
+      <div class="snapshot-value">
+        ${snapshot.reviewVelocity.current}
+        <span class="velocity-up"><i class="fas fa-arrow-trend-up"></i></span>
+      </div>
+      <div class="snapshot-label">New Reviews</div>
+      <div class="snapshot-detail">Past ${snapshot.reviewVelocity.period} (${velocityText})</div>
+    </div>
+    <div class="snapshot-item">
+      <div class="snapshot-value">${snapshot.responseRate}%</div>
+      <div class="snapshot-label">Response Rate</div>
+      <div class="snapshot-detail">Owner replies to reviews</div>
+    </div>
+  `;
+}
+
+function renderCustomerInsights(insights) {
+  const container = document.getElementById('customerInsightsList');
+  if (!container) return;
+
+  // Only show first 3 insights, and only show quote for the first one
+  const limitedInsights = insights.slice(0, 3);
+
+  container.innerHTML = limitedInsights.map((insight, index) => `
+    <div class="insight-item">
+      <div class="insight-header">
+        <span class="insight-theme">${insight.theme}</span>
+        <span class="insight-percentage">${insight.percentage}% mention this</span>
+      </div>
+      <p class="insight-description">${insight.description}</p>
+      ${index === 0 ? `
+      <div class="insight-quote">
+        <span class="insight-quote-icon"><i class="fas fa-quote-left"></i></span>
+        <div>
+          <p class="insight-quote-text">"${insight.representativeQuote.text}"</p>
+          <div class="insight-quote-author">— ${insight.representativeQuote.author}</div>
         </div>
       </div>
-      <p class="review-text">"${review.text}"</p>
+      ` : ''}
     </div>
   `).join('');
+}
+
+function renderFeaturedReviews(featuredReview, recentReview) {
+  const container = document.getElementById('featuredReviewsGrid');
+  if (!container) return;
+
+  container.innerHTML = `
+    <div class="review-embed-card">
+      <div class="review-embed-header">
+        <svg class="google-logo" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+          <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+          <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+          <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+        </svg>
+        <span class="review-embed-title">Featured Review</span>
+      </div>
+      <div class="review-embed-content">
+        <div class="review-embed-reviewer">
+          <img src="${featuredReview.reviewerAvatar}" alt="${featuredReview.reviewerName}" class="review-embed-avatar">
+          <div class="review-embed-info">
+            <div class="review-embed-name">${featuredReview.reviewerName}</div>
+            <div class="review-embed-meta">
+              <div class="review-embed-stars">
+                ${generateStarsHTML(featuredReview.rating)}
+              </div>
+              <span class="review-embed-date">${formatDate(featuredReview.date)}</span>
+            </div>
+          </div>
+        </div>
+        <p class="review-embed-text">"${featuredReview.text}"</p>
+      </div>
+    </div>
+    <div class="review-embed-card">
+      <div class="review-embed-header">
+        <svg class="google-logo" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+          <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+          <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+          <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+        </svg>
+        <span class="review-embed-title">Recent Review</span>
+      </div>
+      <div class="review-embed-content">
+        <div class="review-embed-reviewer">
+          <img src="${recentReview.reviewerAvatar}" alt="${recentReview.reviewerName}" class="review-embed-avatar">
+          <div class="review-embed-info">
+            <div class="review-embed-name">${recentReview.reviewerName}</div>
+            <div class="review-embed-meta">
+              <div class="review-embed-stars">
+                ${generateStarsHTML(recentReview.rating)}
+              </div>
+              <span class="review-embed-date">${recentReview.date}</span>
+            </div>
+          </div>
+        </div>
+        <p class="review-embed-text">"${recentReview.text}"</p>
+      </div>
+    </div>
+  `;
+}
+
+function renderReviewPlatformLinks(platformLinks) {
+  const container = document.getElementById('reviewPlatformLinks');
+  if (!container) return;
+
+  container.innerHTML = `
+    <span class="platform-links-label">See all reviews on</span>
+    <div class="platform-links-row">
+      <a href="${platformLinks.google}" target="_blank" class="platform-link google">
+        <i class="fab fa-google"></i>
+        <span>Google</span>
+      </a>
+      <a href="${platformLinks.theknot}" target="_blank" class="platform-link theknot">
+        <i class="fas fa-ring"></i>
+        <span>The Knot</span>
+      </a>
+      <a href="${platformLinks.yelp}" target="_blank" class="platform-link yelp">
+        <i class="fab fa-yelp"></i>
+        <span>Yelp</span>
+      </a>
+    </div>
+  `;
 }
 
 function generateStarsHTML(rating) {
@@ -196,23 +326,74 @@ function generateStarsHTML(rating) {
 }
 
 function renderBenableRecommendations(recommendations) {
-  const avatarImages = ['images/benable-1.jpg', 'images/benable-2.jpg', 'images/benable-3.jpg'];
-  const list = document.getElementById('benableRecommendationsList');
+  const carousel = document.getElementById('recCarousel');
+  if (!carousel) return;
 
-  list.innerHTML = recommendations.map((rec, index) => `
-    <div class="recommendation-card">
-      <div class="recommender-info">
-        <img src="${avatarImages[index]}" alt="${rec.recommenderName}" class="recommender-avatar">
-        <div class="recommender-details">
-          <h4>${rec.recommenderName}</h4>
-          <a href="${rec.profileLink}" target="_blank" class="benable-link">
-            View on Benable <i class="fas fa-external-link-alt"></i>
-          </a>
+  // Sample photos for the rec cards
+  const recPhotos = [
+    'images/rec-photo-1.jpg',
+    'images/rec-photo-2.jpg',
+    'images/rec-photo-3.jpg',
+    'images/rec-photo-4.jpg',
+    'images/rec-photo-5.jpg'
+  ];
+
+  const cardsHtml = recommendations.map((rec, index) => `
+    <div class="rec-card">
+      <div class="rec-card-header">
+        <i class="far fa-list-alt"></i>
+        <span class="rec-list-name">${rec.listName}</span>
+      </div>
+      <div class="rec-card-image">
+        <img src="${recPhotos[index % recPhotos.length]}" alt="${rec.recTitle}" class="rec-photo">
+      </div>
+      <div class="rec-card-content">
+        <h4 class="rec-title">${rec.recTitle}</h4>
+        <div class="rec-note-row">
+          <img src="${rec.recommenderAvatar}" alt="${rec.recommenderName}" class="rec-avatar">
+          <p class="rec-note">${rec.note}</p>
+        </div>
+        <div class="rec-actions">
+          <div class="rec-action">
+            <i class="far fa-heart"></i>
+            <span>${formatCount(rec.likes)}</span>
+          </div>
+          <div class="rec-action">
+            <i class="far fa-comment"></i>
+            <span>${formatCount(rec.comments)}</span>
+          </div>
+          <div class="rec-action-spacer"></div>
+          <div class="rec-action">
+            <i class="fas fa-arrow-up-from-bracket"></i>
+          </div>
+          <div class="rec-action">
+            <i class="far fa-bookmark"></i>
+          </div>
         </div>
       </div>
-      <p class="recommendation-text">"${rec.note}"</p>
     </div>
   `).join('');
+
+  // Add "View more" card at the end
+  const viewMoreCard = `
+    <a href="https://benable.com/bellavistaphoto" target="_blank" class="rec-card rec-card-view-more">
+      <div class="view-more-content">
+        <div class="view-more-icon">
+          <i class="fas fa-arrow-right"></i>
+        </div>
+        <span>View more on Benable</span>
+      </div>
+    </a>
+  `;
+
+  carousel.innerHTML = cardsHtml + viewMoreCard;
+}
+
+function formatCount(count) {
+  if (count >= 1000) {
+    return (count / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
+  }
+  return count.toString();
 }
 
 function renderSocialProof(socialProof) {
