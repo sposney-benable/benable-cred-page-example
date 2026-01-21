@@ -207,10 +207,53 @@ const businessData = {
   "socialProof": [
     {
       "creatorName": "Austin Wedding Insider",
+      "username": "austinweddinginsider",
       "followerCount": 45000,
       "platform": "Instagram",
-      "quote": "Obsessed with this vendor! Bella Vista Photography always delivers absolute magic. Their portfolio speaks for itself 📸✨",
-      "postLink": "https://instagram.com/p/abc123"
+      "postType": "Post",
+      "caption": "Still can't get over this magical sunset ceremony captured by @bellavistaphoto 📸✨ The way Sarah works with natural light is pure artistry. If you're getting married in Austin, you NEED to check them out! #AustinWedding #WeddingPhotography #TexasBride",
+      "likes": 2847,
+      "comments": 143,
+      "postLink": "https://instagram.com/p/abc123",
+      "avatar": "images/influencer-1.jpg",
+      "verified": true,
+      "photos": [
+        "https://images.unsplash.com/photo-1519741497674-611481863552?w=600&h=600&fit=crop",
+        "https://images.unsplash.com/photo-1606216794074-735e91aa2c92?w=600&h=600&fit=crop",
+        "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=600&h=600&fit=crop"
+      ]
+    },
+    {
+      "creatorName": "Wedding TikTok",
+      "username": "weddingtiktok",
+      "followerCount": 892000,
+      "platform": "TikTok",
+      "postType": "Video",
+      "caption": "POV: You hired the right photographer 😭💕 Sound ON for the surprise first look reaction! @bellavistaphoto understood the assignment #WeddingTok #FirstLook #WeddingPhotographer",
+      "likes": 45200,
+      "comments": 1823,
+      "postLink": "https://tiktok.com/@weddingtiktok/video/123",
+      "avatar": "images/benable-3.jpg",
+      "verified": true,
+      "thumbnail": "https://images.unsplash.com/photo-1460978812857-470ed1c77af0?w=400&h=711&fit=crop"
+    },
+    {
+      "creatorName": "Texas Bride Magazine",
+      "username": "texasbridemag",
+      "followerCount": 128000,
+      "platform": "Instagram",
+      "postType": "Post",
+      "caption": "This gorgeous gallery from @bellavistaphoto has us swooning! 😍 From the intimate first look to the wild dance floor moments - every shot tells a story. Featured in our Spring 2025 issue! #TexasBride #WeddingInspo",
+      "likes": 5421,
+      "comments": 287,
+      "postLink": "https://instagram.com/p/def456",
+      "avatar": "images/benable-2.jpg",
+      "verified": true,
+      "photos": [
+        "https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?w=600&h=600&fit=crop",
+        "https://images.unsplash.com/photo-1591604466107-ec97de577aff?w=600&h=600&fit=crop",
+        "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=600&h=600&fit=crop"
+      ]
     }
   ],
   "pressMembers": [

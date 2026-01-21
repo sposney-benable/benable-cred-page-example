@@ -405,46 +405,160 @@ function renderSocialProof(socialProof) {
     return;
   }
 
-  const proof = socialProof[0];
+  const embedsHtml = socialProof.map(proof => {
+    const isInstagram = proof.platform === 'Instagram';
+    const isTikTok = proof.platform === 'TikTok';
 
-  list.innerHTML = `
-    <div class="instagram-post">
-      <div class="instagram-header">
-        <div class="instagram-user">
-          <img src="images/influencer-1.jpg" alt="${proof.creatorName}" class="instagram-avatar">
-          <div>
-            <div class="instagram-username">
-              ${proof.creatorName.toLowerCase().replace(/\s+/g, '')}
-              <i class="fas fa-check-circle instagram-verified"></i>
+    if (isInstagram) {
+      return renderInstagramEmbed(proof);
+    } else if (isTikTok) {
+      return renderTikTokEmbed(proof);
+    }
+    return '';
+  }).join('');
+
+  // Add "View more" card at the end
+  const viewMoreCard = `
+    <a href="https://instagram.com/bellavistaphoto" target="_blank" class="social-embed-view-more">
+      <div class="view-more-content">
+        <div class="view-more-icon">
+          <i class="fas fa-arrow-right"></i>
+        </div>
+        <span>View more mentions</span>
+      </div>
+    </a>
+  `;
+
+  list.innerHTML = embedsHtml + viewMoreCard;
+}
+
+function renderInstagramEmbed(proof) {
+  // Generate photo carousel HTML
+  const photosHtml = proof.photos && proof.photos.length > 0
+    ? proof.photos.map((photo, index) => `
+        <div class="photo-carousel-item">
+          <img src="${photo}" alt="Photo ${index + 1}" onerror="this.parentElement.innerHTML='<div class=\\'photo-carousel-placeholder\\'><i class=\\'fab fa-instagram\\'></i></div>'">
+        </div>
+      `).join('')
+    : `<div class="photo-carousel-item"><div class="photo-carousel-placeholder"><i class="fab fa-instagram"></i></div></div>`;
+
+  const dotsHtml = proof.photos && proof.photos.length > 1
+    ? `<div class="carousel-dots">
+        ${proof.photos.map((_, index) => `<span class="carousel-dot ${index === 0 ? 'active' : ''}"></span>`).join('')}
+       </div>`
+    : '';
+
+  const indicatorHtml = proof.photos && proof.photos.length > 1
+    ? `<span class="carousel-indicator">1/${proof.photos.length}</span>`
+    : '';
+
+  return `
+    <div class="social-embed instagram">
+      <div class="social-embed-header">
+        <div class="social-embed-user">
+          <img src="${proof.avatar}" alt="${proof.creatorName}" class="social-embed-avatar">
+          <div class="social-embed-user-info">
+            <div class="social-embed-username">
+              ${proof.username}
+              ${proof.verified ? '<i class="fas fa-check-circle social-embed-verified"></i>' : ''}
             </div>
-            <div class="instagram-followers">${formatFollowers(proof.followerCount)} followers</div>
+            <div class="social-embed-meta">${formatFollowers(proof.followerCount)} followers</div>
           </div>
         </div>
-        <div class="instagram-more">
-          <i class="fas fa-ellipsis-h"></i>
+        <div class="social-embed-platform" style="color: #E4405F">
+          <i class="fab fa-instagram"></i>
         </div>
       </div>
-      <div class="instagram-content">
-        <p class="instagram-caption">
-          <strong>${proof.creatorName.toLowerCase().replace(/\s+/g, '')}</strong> ${proof.quote}
-        </p>
-        <div class="instagram-actions">
-          <div class="instagram-action liked">
-            <i class="fas fa-heart"></i>
-            <span>2,847</span>
+      <div class="social-embed-photos">
+        <div class="photo-carousel">
+          ${photosHtml}
+        </div>
+        ${dotsHtml}
+        ${indicatorHtml}
+      </div>
+      <div class="social-embed-content">
+        <div class="social-embed-actions">
+          <div class="social-embed-action">
+            <i class="far fa-heart"></i>
+            <span>${formatCount(proof.likes)}</span>
           </div>
-          <div class="instagram-action">
+          <div class="social-embed-action">
             <i class="far fa-comment"></i>
-            <span>143</span>
+            <span>${formatCount(proof.comments)}</span>
           </div>
-          <div class="instagram-action">
+          <div class="social-embed-action">
             <i class="far fa-paper-plane"></i>
           </div>
+          <div class="social-embed-action-right">
+            <i class="far fa-bookmark"></i>
+          </div>
         </div>
+        <p class="social-embed-caption">
+          <strong>${proof.username}</strong> ${proof.caption}
+        </p>
       </div>
-      <a href="${proof.postLink}" target="_blank" class="instagram-link">
+      <a href="${proof.postLink}" target="_blank" class="social-embed-link">
         <i class="fab fa-instagram"></i>
         View on Instagram
+      </a>
+    </div>
+  `;
+}
+
+function renderTikTokEmbed(proof) {
+  const thumbnailHtml = proof.thumbnail
+    ? `<img src="${proof.thumbnail}" alt="Video thumbnail" class="tiktok-thumbnail" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+       <div class="tiktok-thumbnail-placeholder" style="display: none;"></div>`
+    : `<div class="tiktok-thumbnail-placeholder"></div>`;
+
+  return `
+    <div class="social-embed tiktok">
+      <div class="social-embed-header">
+        <div class="social-embed-user">
+          <img src="${proof.avatar}" alt="${proof.creatorName}" class="social-embed-avatar">
+          <div class="social-embed-user-info">
+            <div class="social-embed-username">
+              ${proof.username}
+              ${proof.verified ? '<i class="fas fa-check-circle social-embed-verified" style="color: #20D5EC;"></i>' : ''}
+            </div>
+            <div class="social-embed-meta">${formatFollowers(proof.followerCount)} followers</div>
+          </div>
+        </div>
+        <div class="social-embed-platform" style="color: #fff">
+          <i class="fab fa-tiktok"></i>
+        </div>
+      </div>
+      <div class="tiktok-video-container">
+        ${thumbnailHtml}
+        <div class="tiktok-play-overlay">
+          <i class="fas fa-play"></i>
+        </div>
+        <div class="tiktok-sidebar">
+          <div class="tiktok-sidebar-action">
+            <i class="fas fa-heart"></i>
+            <span>${formatCount(proof.likes)}</span>
+          </div>
+          <div class="tiktok-sidebar-action">
+            <i class="fas fa-comment-dots"></i>
+            <span>${formatCount(proof.comments)}</span>
+          </div>
+          <div class="tiktok-sidebar-action">
+            <i class="fas fa-share"></i>
+            <span>Share</span>
+          </div>
+          <div class="tiktok-music-disc">
+            <i class="fas fa-music"></i>
+          </div>
+        </div>
+      </div>
+      <div class="social-embed-content">
+        <p class="social-embed-caption">
+          <strong>@${proof.username}</strong> ${proof.caption}
+        </p>
+      </div>
+      <a href="${proof.postLink}" target="_blank" class="social-embed-link">
+        <i class="fab fa-tiktok"></i>
+        View on TikTok
       </a>
     </div>
   `;
