@@ -7,6 +7,73 @@ document.addEventListener('DOMContentLoaded', function() {
 function initializePage() {
   renderPublicView();
   renderOwnerInsights();
+  initCarouselArrows();
+}
+
+// ============== CAROUSEL ARROW NAVIGATION ==============
+
+function initCarouselArrows() {
+  // Social Proof Carousel
+  setupCarouselArrows(
+    'socialCarouselContainer',
+    'socialCarouselPrev',
+    'socialCarouselNext',
+    336 // card width + gap
+  );
+
+  // Benable Recommendations Carousel
+  setupCarouselArrows(
+    'recCarouselContainer',
+    'recCarouselPrev',
+    'recCarouselNext',
+    316 // card width + gap
+  );
+}
+
+function setupCarouselArrows(containerId, prevBtnId, nextBtnId, scrollAmount) {
+  const container = document.getElementById(containerId);
+  const prevBtn = document.getElementById(prevBtnId);
+  const nextBtn = document.getElementById(nextBtnId);
+
+  if (!container || !prevBtn || !nextBtn) return;
+
+  // Update arrow visibility based on scroll position
+  function updateArrowVisibility() {
+    const scrollLeft = container.scrollLeft;
+    const maxScroll = container.scrollWidth - container.clientWidth;
+
+    // Hide prev arrow at start
+    if (scrollLeft <= 10) {
+      prevBtn.classList.add('hidden');
+    } else {
+      prevBtn.classList.remove('hidden');
+    }
+
+    // Hide next arrow at end
+    if (scrollLeft >= maxScroll - 10) {
+      nextBtn.classList.add('hidden');
+    } else {
+      nextBtn.classList.remove('hidden');
+    }
+  }
+
+  // Initial visibility check
+  updateArrowVisibility();
+
+  // Update on scroll
+  container.addEventListener('scroll', updateArrowVisibility);
+
+  // Update on resize
+  window.addEventListener('resize', updateArrowVisibility);
+
+  // Click handlers
+  prevBtn.addEventListener('click', function() {
+    container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+  });
+
+  nextBtn.addEventListener('click', function() {
+    container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+  });
 }
 
 // ============== VIEW TOGGLE ==============
@@ -51,8 +118,8 @@ function renderPublicView() {
   // Business Links (condensed social icons)
   renderBusinessLinks(data.business);
 
-  // Credentials
-  renderCredentials(data.business.credentials);
+  // Credentials (includes owner, team size, service area)
+  renderCredentials(data.business);
 
   // Customer Insights (new insights-focused section)
   renderReviewSnapshot(data.reviewInsights.snapshot);
@@ -71,9 +138,6 @@ function renderPublicView() {
 
   // Press with logos
   renderPress(data.pressMembers);
-
-  // Contact
-  renderContact(data.business);
 }
 
 function renderStars(containerId, rating) {
@@ -101,6 +165,17 @@ function renderBusinessLinks(business) {
   websiteLink.href = business.website;
   document.getElementById('websiteUrl').textContent = business.website.replace('https://', '');
 
+  // Contact icons (phone & email)
+  const contactIcons = document.getElementById('contactIcons');
+  contactIcons.innerHTML = `
+    <a href="tel:${business.phone.replace(/[^0-9]/g, '')}" class="contact-icon-link phone" title="Call ${business.phone}">
+      <i class="fas fa-phone"></i>
+    </a>
+    <a href="mailto:${business.email}" class="contact-icon-link email" title="Email ${business.email}">
+      <i class="fas fa-envelope"></i>
+    </a>
+  `;
+
   // Social icons
   const socialIcons = document.getElementById('socialIcons');
   const allLinks = [
@@ -119,8 +194,9 @@ function renderBusinessLinks(business) {
   `).join('');
 }
 
-function renderCredentials(credentials) {
+function renderCredentials(business) {
   const grid = document.getElementById('credentialsGrid');
+  const credentials = business.credentials;
 
   // Format awards as hyperlinks
   const awardsHtml = credentials.awards.map(award =>
@@ -133,11 +209,32 @@ function renderCredentials(credentials) {
   ).join(', ');
 
   grid.innerHTML = `
+    <div class="credential-item credential-item-owner">
+      <img src="${business.owner.photo}" alt="${business.owner.name}" class="owner-photo">
+      <div class="credential-content">
+        <h4>Owner</h4>
+        <p>${business.owner.name}</p>
+      </div>
+    </div>
     <div class="credential-item">
       <div class="credential-icon"><i class="fas fa-calendar-check"></i></div>
       <div class="credential-content">
         <h4>Years in Business</h4>
         <p>${credentials.yearsInBusiness} years</p>
+      </div>
+    </div>
+    <div class="credential-item">
+      <div class="credential-icon"><i class="fas fa-user-group"></i></div>
+      <div class="credential-content">
+        <h4>Team Size</h4>
+        <p>${business.teamSize}</p>
+      </div>
+    </div>
+    <div class="credential-item">
+      <div class="credential-icon"><i class="fas fa-map-marker-alt"></i></div>
+      <div class="credential-content">
+        <h4>Service Area</h4>
+        <p>${business.serviceArea}</p>
       </div>
     </div>
     <div class="credential-item">
@@ -155,7 +252,7 @@ function renderCredentials(credentials) {
       </div>
     </div>
     <div class="credential-item">
-      <div class="credential-icon"><i class="fas fa-users"></i></div>
+      <div class="credential-icon"><i class="fas fa-handshake"></i></div>
       <div class="credential-content">
         <h4>Affiliations</h4>
         <p>${affiliationsHtml}</p>
@@ -592,33 +689,6 @@ function renderPress(pressItems) {
       </div>
     </a>
   `).join('');
-}
-
-function renderContact(business) {
-  const container = document.getElementById('contactMethods');
-  container.innerHTML = `
-    <a href="tel:${business.phone.replace(/[^0-9]/g, '')}" class="contact-item">
-      <div class="contact-icon"><i class="fas fa-phone"></i></div>
-      <div class="contact-details">
-        <h4>Phone</h4>
-        <p>${business.phone}</p>
-      </div>
-    </a>
-    <a href="mailto:${business.email}" class="contact-item">
-      <div class="contact-icon"><i class="fas fa-envelope"></i></div>
-      <div class="contact-details">
-        <h4>Email</h4>
-        <p>${business.email}</p>
-      </div>
-    </a>
-    <a href="${business.website}" target="_blank" class="contact-item">
-      <div class="contact-icon"><i class="fas fa-globe"></i></div>
-      <div class="contact-details">
-        <h4>Website</h4>
-        <p>${business.website.replace('https://', '')}</p>
-      </div>
-    </a>
-  `;
 }
 
 // ============== OWNER INSIGHTS RENDERING ==============

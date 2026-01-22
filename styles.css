@@ -282,6 +282,12 @@ a:hover {
   background: rgba(16, 185, 129, 0.1);
   border-radius: var(--radius-full);
   border: 1px solid rgba(16, 185, 129, 0.2);
+  animation: pulse-badge 3s ease-in-out infinite;
+}
+
+@keyframes pulse-badge {
+  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+  50% { opacity: 0.9; box-shadow: 0 0 8px 2px rgba(16, 185, 129, 0.3); }
 }
 
 .monitoring-dot {
@@ -350,20 +356,64 @@ a:hover {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.5rem 1rem;
-  background: var(--bg-tertiary);
+  padding: 0.625rem 1.25rem;
+  background: rgb(122, 92, 250);
   border-radius: var(--radius-full);
-  color: var(--text-primary);
-  font-size: 0.875rem;
-  font-weight: 500;
+  color: white;
+  font-size: 0.9375rem;
+  font-weight: 600;
   text-decoration: none;
   transition: all var(--transition-fast);
+  box-shadow: var(--shadow-sm);
 }
 
 .business-website-link:hover {
-  background: var(--benable-primary);
+  background: rgb(100, 70, 230);
   color: white;
   text-decoration: none;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.links-divider {
+  width: 1px;
+  height: 24px;
+  background: var(--border-light);
+}
+
+.contact-icons {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.contact-icon-link {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-full);
+  background: var(--bg-tertiary);
+  color: var(--text-secondary);
+  font-size: 1.125rem;
+  transition: all var(--transition-fast);
+  text-decoration: none;
+}
+
+.contact-icon-link:hover {
+  transform: translateY(-2px);
+  text-decoration: none;
+}
+
+.contact-icon-link.phone:hover {
+  background: var(--benable-accent);
+  color: white;
+}
+
+.contact-icon-link.email:hover {
+  background: var(--benable-purple);
+  color: white;
 }
 
 .social-icons {
@@ -469,18 +519,19 @@ a:hover {
 .competitive-badge {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  background: var(--benable-gradient);
-  color: #fff;
-  padding: 0.5rem 1rem;
+  gap: 0.375rem;
+  background: var(--bg-tertiary);
+  color: var(--text-secondary);
+  padding: 0.375rem 0.75rem;
   border-radius: var(--radius-full);
-  font-size: 0.875rem;
+  font-size: 0.75rem;
   font-weight: 500;
-  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-light);
 }
 
 .badge-icon {
-  font-size: 1rem;
+  font-size: 0.75rem;
+  color: var(--benable-orange);
 }
 
 /* About Section */
@@ -509,6 +560,16 @@ a:hover {
   border-radius: var(--radius-md);
   color: var(--benable-purple);
   flex-shrink: 0;
+}
+
+.owner-photo {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 2px solid var(--benable-gradient-soft);
+  box-shadow: var(--shadow-sm);
 }
 
 .credential-content h4 {
@@ -2351,6 +2412,69 @@ a:hover {
   display: flex;
   gap: 1rem;
   padding-bottom: 0.75rem;
+}
+
+/* Carousel Navigation Arrows */
+.carousel-wrapper {
+  position: relative;
+}
+
+.carousel-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-light);
+  box-shadow: var(--shadow-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  transition: all var(--transition-fast);
+  color: var(--text-primary);
+  font-size: 1rem;
+}
+
+.carousel-arrow:hover {
+  background: var(--benable-gradient);
+  color: white;
+  border-color: transparent;
+  transform: translateY(-50%) scale(1.05);
+}
+
+.carousel-arrow:active {
+  transform: translateY(-50%) scale(0.95);
+}
+
+.carousel-arrow.prev {
+  left: -20px;
+}
+
+.carousel-arrow.next {
+  right: -20px;
+}
+
+.carousel-arrow:disabled,
+.carousel-arrow.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Hide arrows on mobile/touch devices */
+@media (max-width: 768px) {
+  .carousel-arrow {
+    display: none;
+  }
+}
+
+/* Adjust carousel containers for arrow spacing */
+.social-proof-card .carousel-wrapper,
+.benable-community-card .carousel-wrapper {
+  margin: 0 1.5rem;
 }
 
 .rec-card {

@@ -29,7 +29,14 @@ const businessData = {
       "affiliations": [
         { "name": "Professional Photographers of America (PPA)", "url": "https://ppa.com" }
       ]
-    }
+    },
+    "owner": {
+      "name": "Sarah Chen",
+      "title": "Founder & Lead Photographer",
+      "photo": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop&crop=face"
+    },
+    "serviceArea": "Austin Metro & Central Texas",
+    "teamSize": "3 photographers"
   },
   "ratings": {
     "overallRating": 4.9,
