@@ -3,6 +3,7 @@ const businessData = {
   "business": {
     "name": "Bella Vista Photography",
     "category": "Wedding Photographer",
+    "ctaLabel": "Book Now",
     "city": "Austin",
     "state": "TX",
     "description": "Bella Vista Photography is a wedding photography studio in Austin, TX specializing in candid, documentary-style wedding coverage. We focus on capturing authentic moments and genuine emotions throughout your special day. Known for our natural light techniques and unobtrusive approach.",

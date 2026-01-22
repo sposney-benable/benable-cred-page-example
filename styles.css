@@ -119,6 +119,15 @@ a:hover {
   max-width: 1200px;
 }
 
+/* Header Left Group */
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  min-width: 0;
+  flex: 1;
+}
+
 .benable-logo {
   display: flex;
   align-items: center;
@@ -176,12 +185,160 @@ a:hover {
 .header-btn-primary {
   background: rgb(122, 92, 250);
   color: white;
+  padding: 0.625rem 1.25rem;
+  font-size: 0.9375rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.header-btn-primary i {
+  font-size: 0.75rem;
+  transition: transform var(--transition-fast);
 }
 
 .header-btn-primary:hover {
   background: rgb(100, 70, 230);
   transform: translateY(-1px);
   box-shadow: var(--shadow-md);
+}
+
+.header-btn-primary:hover i {
+  transform: translateX(3px);
+}
+
+/* Header Business Info */
+.header-business-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+.header-business-info.visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+.header-divider {
+  width: 1px;
+  height: 24px;
+  background: var(--border-medium);
+  flex-shrink: 0;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+.header-divider.visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+.header-business-name {
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.header-business-rating {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.header-stars {
+  color: var(--star-color);
+  font-size: 0.75rem;
+}
+
+.header-review-count {
+  color: var(--text-muted);
+  font-size: 0.8125rem;
+}
+
+@media (max-width: 600px) {
+  .header-business-info {
+    display: none;
+  }
+}
+
+/* Section Navigation */
+.section-nav {
+  background: var(--bg-primary);
+  border-top: 1px solid var(--border-light);
+  padding: 0;
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: max-height 0.3s ease, opacity 0.3s ease, padding 0.3s ease, margin 0.3s ease;
+  margin-top: 0;
+}
+
+.section-nav.visible {
+  max-height: 50px;
+  padding: 0.5rem 0;
+  opacity: 1;
+  margin-top: 0.5rem;
+}
+
+.section-nav .container {
+  max-width: 1200px;
+}
+
+.section-nav-list {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.section-nav-link {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.375rem 0.875rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-decoration: none;
+  border-radius: var(--radius-full);
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+
+.section-nav-link:hover {
+  color: var(--text-primary);
+  background: var(--bg-tertiary);
+  text-decoration: none;
+}
+
+.section-nav-link.active {
+  color: var(--benable-primary-dark);
+  background: rgba(159, 150, 247, 0.15);
+  font-weight: 600;
+}
+
+@media (max-width: 600px) {
+  .section-nav-list {
+    gap: 0.125rem;
+  }
+
+  .section-nav-link {
+    padding: 0.3rem 0.5rem;
+    font-size: 0.75rem;
+  }
 }
 
 /* Benable Wordmark */
@@ -356,23 +513,23 @@ a:hover {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.625rem 1.25rem;
-  background: rgb(122, 92, 250);
+  padding: 0.5rem 1rem;
+  background: rgba(159, 150, 247, 0.15);
   border-radius: var(--radius-full);
-  color: white;
-  font-size: 0.9375rem;
-  font-weight: 600;
+  color: var(--benable-primary-dark);
+  font-size: 0.875rem;
+  font-weight: 500;
   text-decoration: none;
   transition: all var(--transition-fast);
-  box-shadow: var(--shadow-sm);
+  border: 1px solid rgba(159, 150, 247, 0.3);
 }
 
 .business-website-link:hover {
-  background: rgb(100, 70, 230);
-  color: white;
+  background: rgba(159, 150, 247, 0.25);
+  color: var(--benable-primary-dark);
   text-decoration: none;
   transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
+  border-color: rgba(159, 150, 247, 0.5);
 }
 
 .links-divider {

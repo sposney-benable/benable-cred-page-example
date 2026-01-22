@@ -8,6 +8,7 @@ function initializePage() {
   renderPublicView();
   renderOwnerInsights();
   initCarouselArrows();
+  initSectionNav();
 }
 
 // ============== CAROUSEL ARROW NAVIGATION ==============
@@ -76,6 +77,120 @@ function setupCarouselArrows(containerId, prevBtnId, nextBtnId, scrollAmount) {
   });
 }
 
+// ============== SECTION NAVIGATION ==============
+
+function initSectionNav() {
+  const sectionNav = document.getElementById('sectionNav');
+  const aboutSection = document.getElementById('aboutSection');
+  const navLinks = document.querySelectorAll('.section-nav-link');
+  const headerBusinessInfo = document.getElementById('headerBusinessInfo');
+  const headerDivider = document.querySelector('.header-divider');
+  const businessNameElement = document.getElementById('businessName');
+
+  if (!sectionNav || !aboutSection) return;
+
+  // Section IDs in order
+  const sectionIds = ['aboutSection', 'reviewsSection', 'socialProofSection', 'benableCommunitySection', 'pressSection'];
+
+  // Show/hide section nav based on scroll position past About section
+  function updateNavVisibility() {
+    const aboutRect = aboutSection.getBoundingClientRect();
+    const headerHeight = document.querySelector('.benable-header').offsetHeight;
+
+    // Show nav when About section title is scrolled past
+    if (aboutRect.top < headerHeight) {
+      sectionNav.classList.add('visible');
+    } else {
+      sectionNav.classList.remove('visible');
+    }
+  }
+
+  // Show/hide header business info based on scroll position past business name
+  function updateHeaderBusinessInfo() {
+    if (!businessNameElement || !headerBusinessInfo) return;
+
+    const businessNameRect = businessNameElement.getBoundingClientRect();
+    const headerHeight = document.querySelector('.benable-header').offsetHeight;
+
+    // Show business info in header when business name is scrolled past
+    if (businessNameRect.bottom < headerHeight) {
+      headerBusinessInfo.classList.add('visible');
+      if (headerDivider) headerDivider.classList.add('visible');
+    } else {
+      headerBusinessInfo.classList.remove('visible');
+      if (headerDivider) headerDivider.classList.remove('visible');
+    }
+  }
+
+  // Update active section indicator
+  function updateActiveSection() {
+    const headerHeight = document.querySelector('.benable-header').offsetHeight + 20;
+    let activeSection = null;
+
+    // Find which section is currently in view
+    for (const sectionId of sectionIds) {
+      const section = document.getElementById(sectionId);
+      if (!section) continue;
+
+      const rect = section.getBoundingClientRect();
+      // Section is active if its top is at or above the header
+      if (rect.top <= headerHeight + 50) {
+        activeSection = sectionId;
+      }
+    }
+
+    // Update nav link styles
+    navLinks.forEach(link => {
+      const linkSection = link.getAttribute('data-section');
+      if (linkSection === activeSection) {
+        link.classList.add('active');
+      } else {
+        link.classList.remove('active');
+      }
+    });
+  }
+
+  // Smooth scroll to section on click
+  navLinks.forEach(link => {
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      const targetId = this.getAttribute('data-section');
+      const targetSection = document.getElementById(targetId);
+      if (!targetSection) return;
+
+      const headerHeight = document.querySelector('.benable-header').offsetHeight;
+      const targetPosition = targetSection.getBoundingClientRect().top + window.pageYOffset - headerHeight - 10;
+
+      window.scrollTo({
+        top: targetPosition,
+        behavior: 'smooth'
+      });
+    });
+  });
+
+  // Combined scroll handler
+  function handleScroll() {
+    updateNavVisibility();
+    updateActiveSection();
+    updateHeaderBusinessInfo();
+  }
+
+  // Initial check
+  handleScroll();
+
+  // Listen to scroll events with throttling
+  let ticking = false;
+  window.addEventListener('scroll', function() {
+    if (!ticking) {
+      window.requestAnimationFrame(function() {
+        handleScroll();
+        ticking = false;
+      });
+      ticking = true;
+    }
+  });
+}
+
 // ============== VIEW TOGGLE ==============
 
 function showPublicView() {
@@ -114,6 +229,16 @@ function renderPublicView() {
 
   // Stars
   renderStars('starsContainer', data.ratings.overallRating);
+
+  // Header CTA button
+  const headerCta = document.getElementById('headerCta');
+  headerCta.href = data.business.website;
+  headerCta.innerHTML = `${data.business.ctaLabel || 'Visit Website'} <i class="fas fa-arrow-right"></i>`;
+
+  // Header business info
+  document.getElementById('headerBusinessName').textContent = data.business.name;
+  document.getElementById('headerRating').textContent = data.ratings.overallRating;
+  document.getElementById('headerReviewCount').textContent = data.ratings.totalReviews;
 
   // Business Links (condensed social icons)
   renderBusinessLinks(data.business);

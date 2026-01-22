@@ -9,16 +9,38 @@
 </head>
 <body>
   <!-- Benable Header -->
-  <header class="benable-header">
+  <header class="benable-header" id="benableHeader">
     <div class="container">
-      <a href="https://benable.com" class="benable-logo" target="_blank">
-        <img src="wordmark.svg" alt="Benable" class="benable-wordmark">
-      </a>
+      <div class="header-left">
+        <a href="https://benable.com" class="benable-logo" target="_blank">
+          <img src="wordmark.svg" alt="Benable" class="benable-wordmark">
+        </a>
+        <span class="header-divider"></span>
+        <div class="header-business-info" id="headerBusinessInfo">
+          <span class="header-business-name" id="headerBusinessName">Bella Vista Photography</span>
+          <span class="header-business-rating">
+            <span class="header-stars"><i class="fas fa-star"></i></span>
+            <span id="headerRating">4.9</span>
+            <span class="header-review-count">(<span id="headerReviewCount">247</span>)</span>
+          </span>
+        </div>
+      </div>
       <div class="benable-header-actions">
-        <a href="https://benable.com" class="header-btn header-btn-secondary" target="_blank">Explore</a>
-        <a href="https://benable.com" class="header-btn header-btn-primary" target="_blank">Join Benable</a>
+        <a href="#" class="header-btn header-btn-primary" id="headerCta" target="_blank">Book Now <i class="fas fa-arrow-right"></i></a>
       </div>
     </div>
+    <!-- Section Navigation -->
+    <nav class="section-nav" id="sectionNav">
+      <div class="container">
+        <ul class="section-nav-list">
+          <li><a href="#aboutSection" class="section-nav-link" data-section="aboutSection">About</a></li>
+          <li><a href="#reviewsSection" class="section-nav-link" data-section="reviewsSection">Reviews</a></li>
+          <li><a href="#socialProofSection" class="section-nav-link" data-section="socialProofSection">Social</a></li>
+          <li><a href="#benableCommunitySection" class="section-nav-link" data-section="benableCommunitySection">Benable</a></li>
+          <li><a href="#pressSection" class="section-nav-link" data-section="pressSection">Press</a></li>
+        </ul>
+      </div>
+    </nav>
   </header>
 
   <!-- View Toggle -->
@@ -82,7 +104,7 @@
         </section>
 
         <!-- About Section -->
-        <section class="card">
+        <section class="card" id="aboutSection">
           <div class="card-header">
             <div class="section-icon"><i class="fas fa-building"></i></div>
             <h2>About <span id="aboutBusinessName">Bella Vista Photography</span></h2>
@@ -96,7 +118,7 @@
         </section>
 
         <!-- Customer Reviews Section - Insights Focused -->
-        <section class="card">
+        <section class="card" id="reviewsSection">
           <div class="card-header">
             <div class="section-icon"><i class="fas fa-star"></i></div>
             <h2>What Customers Are Saying</h2>
@@ -152,7 +174,7 @@
         </section>
 
         <!-- Benable Community Section -->
-        <section class="card benable-community-card">
+        <section class="card benable-community-card" id="benableCommunitySection">
           <div class="card-header">
             <div class="section-icon"><i class="fas fa-heart"></i></div>
             <h2>Recommended by the Benable Community</h2>
